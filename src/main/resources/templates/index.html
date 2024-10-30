@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Sender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            max-width: 400px;
+        }
+        input, textarea {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Send Email</h1>
+    <form id="emailForm">
+        <input type="email" id="recipient" placeholder="Recipient Email" required>
+        <input type="text" id="subject" placeholder="Email Subject" required>
+        <textarea id="body" placeholder="Email Body" required></textarea>
+        <button type="submit">Send Email</button>
+    </form>
+
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const recipient = document.getElementById('recipient').value;
+            const subject = document.getElementById('subject').value;
+            const body = document.getElementById('body').value;
+
+            fetch('http://localhost:8080/sendEmail', {
+                method: 'GET', // Change to 'POST' if your backend expects it
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ recipient, subject, body }) // Include this only if using POST
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('responseMessage').innerText = data;
+            })
+            .catch((error) => {
+                document.getElementById('responseMessage').innerText = 'Error: ' + error.message;
+            });
+        });
+    </script>
+
+</body>
+</html>
